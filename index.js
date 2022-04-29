@@ -23,6 +23,7 @@ app.listen(port, () => {
 async function run() {
     try {
         await client.connect();
+        const warehouseCollection = await client.db('warehouse').collection('products')
     }
     finally {
 
