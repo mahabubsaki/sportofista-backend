@@ -56,6 +56,19 @@ async function run() {
                 res.send({ error: 'NotFound' })
             }
         })
+        app.put('/updateproduct', async (req, res) => {
+            const { id, newQuantity } = req.query
+            const query = { _id: ObjectId(id) }
+            const selectedProduct = await warehouseCollection.findOne(query)
+            const { quantity, ...rest } = selectedProduct
+            const updatedProduct = { quantity: newQuantity, rest }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: updatedProduct
+            };
+            const result = await warehouseCollection.updateOne(query, updateDoc, options);
+            res.send(result)
+        })
     }
     finally {
 
