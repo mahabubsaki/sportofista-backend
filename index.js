@@ -26,16 +26,24 @@ async function run() {
         const warehouseCollection = await client.db('warehouse').collection('products')
         app.get('/products', async (req, res) => {
             const query = {}
-            const cursor = warehouseCollection.find(query);
-            const allProducts = await cursor.toArray()
-            let maxProduct;
-            if (allProducts.length <= 6) {
-                maxProduct = allProducts
+            const location = req.query.location
+            if (location === 'home') {
+                const cursor = warehouseCollection.find(query);
+                const allProducts = await cursor.toArray()
+                let maxProduct;
+                if (allProducts.length <= 6) {
+                    maxProduct = allProducts
+                }
+                else {
+                    maxProduct = allProducts.slice(0, 6)
+                }
+                res.send(maxProduct)
             }
             else {
-                maxProduct = allProducts.slice(0, 6)
+                const cursor = warehouseCollection.find(query);
+                const allProducts = await cursor.toArray()
+                res.send(allProducts)
             }
-            res.send(maxProduct)
         })
     }
     finally {
