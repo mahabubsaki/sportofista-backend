@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
 //Database Configuration
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@assingmentcluster.jo7ra.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -40,9 +40,20 @@ async function run() {
                 res.send(maxProduct)
             }
             else {
-                const cursor = warehouseCollection.find(query);
+                const cursor = await warehouseCollection.find(query);
                 const allProducts = await cursor.toArray()
                 res.send(allProducts)
+            }
+        })
+        app.get('/product/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const product = await warehouseCollection.findOne(query)
+            if (product) {
+                res.send(product)
+            }
+            else {
+                res.send({ error: 'NotFound' })
             }
         })
     }
