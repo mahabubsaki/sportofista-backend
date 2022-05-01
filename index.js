@@ -60,8 +60,8 @@ async function run() {
             const { id, newQuantity } = req.query
             const query = { _id: ObjectId(id) }
             const selectedProduct = await warehouseCollection.findOne(query)
-            const { quantity, ...rest } = selectedProduct
-            const updatedProduct = { quantity: newQuantity, rest }
+            const { name, img, description, price, quantity, supplier } = selectedProduct
+            const updatedProduct = { quantity: parseInt(newQuantity), name, img, description, price, supplier }
             const options = { upsert: true };
             const updateDoc = {
                 $set: updatedProduct
