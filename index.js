@@ -56,6 +56,7 @@ async function run() {
             else {
                 const cursor = await warehouseCollection.find(query);
                 const allProducts = await cursor.toArray()
+                console.log(allProducts.length);
                 res.send(allProducts)
             }
         })
@@ -109,7 +110,6 @@ async function run() {
         app.get('/check', tokenVerify, async (req, res) => {
             const decodedEmail = req.decoded.user
             const email = req.query.email
-            console.log(email, decodedEmail);
             if (decodedEmail === email) {
                 res.status(200).send({ message: 'success' })
             }
