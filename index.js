@@ -56,6 +56,14 @@ async function run() {
                 res.send({ error: 'NotFound' })
             }
         })
+        app.get('/myproducts', async (req, res) => {
+            const email = req.query.email
+            console.log(email)
+            const query = { email: email }
+            const cursor = await warehouseCollection.find(query)
+            const myproducts = await cursor.toArray()
+            res.send(myproducts)
+        })
         app.put('/updateproduct', async (req, res) => {
             const { id, newQuantity } = req.query
             const query = { _id: ObjectId(id) }
@@ -67,6 +75,17 @@ async function run() {
                 $set: updatedProduct
             };
             const result = await warehouseCollection.updateOne(query, updateDoc, options);
+            res.send(result)
+        })
+        app.post('/addproduct', async (req, res) => {
+            const newProduct = req.body
+            const result = await warehouseCollection.insertOne(newProduct)
+            res.send(result)
+        })
+        app.delete('/deleteproduct', async (req, res) => {
+            const id = req.query.id
+            const query = { _id: ObjectId(id) }
+            const result = await warehouseCollection.deleteOne(query)
             res.send(result)
         })
     }
