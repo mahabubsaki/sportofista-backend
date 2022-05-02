@@ -55,8 +55,7 @@ async function run() {
             }
             else {
                 const cursor = await warehouseCollection.find(query);
-                const allProducts = await cursor.toArray()
-                console.log(allProducts.length);
+                const allProducts = await cursor.toArray();
                 res.send(allProducts)
             }
         })
