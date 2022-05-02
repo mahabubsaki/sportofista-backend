@@ -58,7 +58,6 @@ async function run() {
         })
         app.get('/myproducts', async (req, res) => {
             const email = req.query.email
-            console.log(email)
             const query = { email: email }
             const cursor = await warehouseCollection.find(query)
             const myproducts = await cursor.toArray()
@@ -87,6 +86,13 @@ async function run() {
             const query = { _id: ObjectId(id) }
             const result = await warehouseCollection.deleteOne(query)
             res.send(result)
+        })
+        app.post('/enter', async (req, res) => {
+            const user = req.body.email
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN, {
+                expiresIn: '1d'
+            })
+            res.send({ accessToken })
         })
     }
     finally {
