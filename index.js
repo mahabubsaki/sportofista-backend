@@ -106,11 +106,12 @@ async function run() {
             const accessToken = jwt.sign({ user: user }, process.env.ACCESS_TOKEN, { expiresIn: '24h' })
             res.send({ accessToken })
         })
-        app.get('/user/:email', tokenVerify, async (req, res) => {
-            const decodedEmail = req.decoded.email
-            const email = req.params.email
+        app.get('/check', tokenVerify, async (req, res) => {
+            const decodedEmail = req.decoded.user
+            const email = req.query.email
+            console.log(email, decodedEmail);
             if (decodedEmail === email) {
-                res.send({ message: 'success' })
+                res.status(200).send({ message: 'success' })
             }
             else {
                 return res.status(403).send({ message: 'Forbidden Access' })
