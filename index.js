@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
 const app = express()
+const jwt = require('jsonwebtoken')
 const port = process.env.PORT || 5000
 //middleware
 app.use(cors())
@@ -89,10 +90,18 @@ async function run() {
         })
         app.post('/enter', async (req, res) => {
             const user = req.body.email
-            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN, {
-                expiresIn: '1d'
-            })
+            const accessToken = jwt.sign({ user: user }, process.env.ACCESS_TOKEN, { expiresIn: '24h' })
             res.send({ accessToken })
+        })
+        app.get('/user/:email', tokenVerify, async (req, res) => {
+            const decodedEmail = req.decoded.email
+            const email = req.params.email
+            if (decodedEmail === email) {
+                res.send({ message: 'success' })
+            }
+            else {
+                return res.status(403).send({ message: 'Forbidden Access' })
+            }
         })
     }
     finally {
